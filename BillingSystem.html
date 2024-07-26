@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/2e066fb4d2.js" crossorigin="anonymous"></script>
+    <title>Billing System</title>
+  </head>
+  <style>
+    .btn2{
+      background-color: grey;
+    }
+    .btn4{
+      margin-left: 600px;
+    }
+  </style>
+  <body>
+    <body>
+
+    <div class="container">
+    <div id="show"></div>
+    <div id="show1"></div>
+  </div>
+    <script type="text/javascript">
+      const data = [
+{"code":"PEP221","prod":"Pepsi","price":12,"instock":"Yes","category":"Beverages"},
+{"code":"COK113","prod":"Coca Cola","price":18,"instock":"Yes","category":"Beverages"},
+{"code":"MIR646","prod":"Mirinda","price":15,"instock":"No","category":"Beverages"},
+{"code":"SLI874","prod":"Slice","price":22,"instock":"Yes","category":"Beverages"},
+{"code":"MIN654","prod":"Minute Maid","price":25,"instock":"Yes","category":"Beverages"},
+{"code":"APP652","prod":"Appy","price":10,"instock":"No","category":"Beverages"},
+{"code":"FRO085","prod":"Frooti","price":30,"instock":"Yes","category":"Beverages"},
+{"code":"REA546","prod":"Real","price":24,"instock":"No","category":"Beverages"},
+{"code":"DM5461","prod":"Dairy Milk","price":40,"instock":"Yes","category":"Chocolates"},
+{"code":"KK6546","prod":"Kitkat","price":15,"instock":"Yes","category":"Chocolates"},
+{"code":"PER5436","prod":"Perk","price":8,"instock":"No","category":"Chocolates"},
+{"code":"FST241","prod":"5 Star","price":25,"instock":"Yes","category":"Chocolates"},
+{"code":"NUT553","prod":"Nutties","price":18,"instock":"Yes","category":"Chocolates"},
+{"code":"GEM006","prod":"Gems","price":8,"instock":"No","category":"Chocolates"},
+{"code":"GD2991","prod":"Good Day","price":25,"instock":"Yes","category":"Biscuits"},
+{"code":"PAG542","prod":"Parle G","price":5,"instock":"Yes","category":"Biscuits"},
+{"code":"MON119","prod":"Monaco","price":7,"instock":"No","category":"Biscuits"},
+{"code":"BOU291","prod":"Bourbon","price":22,"instock":"Yes","category":"Biscuits"},
+{"code":"MAR951","prod":"MarieGold","price":15,"instock":"Yes","category":"Biscuits"},
+{"code":"ORE188","prod":"Oreo","price":30,"instock":"No","category":"Biscuits"}];
+
+const category = ["Beverages","Chocolates","Biscuits"];
+
+const inStock = ["Yes","No"];
+
+const priceRange = ["<10","10-20",">20"];
+
+ const bill = [];
+
+ let editIndex =-1;
+
+ var mydata = {};
+
+show();
+
+   function show(active=0,data1,bill2){
+    let str = makeNavbar(active);
+    active===1? str+=showBilltable(data1,bill2) : str+='';
+    active===2 ? str+=showForm() : str+='';
+     
+    document.getElementById('show').innerHTML = str;
+    }
+
+   function showBill(data1,bill1){
+   //editIndex=-1;
+  
+    show(1,data1,bill1);
+   }
+  
+//////////////////////////////////////////////// ADD TO BILL //////////////////////////////////////////////////////
+
+function addBill(index){
+  editIndex==index;
+  let arr = data[index];
+let p1 = bill.find(function(ele){
+
+        return ele.code==arr.code;
+       });
+      if(p1){
+       p1.quantity++;
+       p1.amount=p1.quantity*p1.price;
+   }
+                else{
+                let prod1 = data.find(function(ele){
+                    return ele.code==arr.code;
+                });
+                   
+        let item ={code:prod1.code,prod:prod1.prod,quantity:1,price:prod1.price,amount:1*prod1.price};
+        bill.push(item);
+            }
+             console.log(bill);
+             
+             showBill(data,bill);
+        }   
+///////////////////////////////////////////////////SHOW BILL TABLE/////////////////////////////////////////////   
+ 
+ function showBilltable(ele,ele1){
+let items = 0;
+let qty=0;
+let amt =0;
+let countquantity=0;
+let amount =0;
+
+let table1='';
+//if(ele1.length>=0){
+ // if(editIndex>=0){
+let arr4 = ele1.map(function(ele){
+    console.log("ele",ele);
+    countquantity = ele1.reduce(function(acc,curr){
+                
+
+             return (+acc)+(+curr.quantity);
+
+    },0); 
+     amount= ele1.reduce(function(acc,curr){
+            return acc+curr.price*curr.quantity;
+        },0);
+  
+ });
+//}
+console.log("cq",countquantity);
+  //if(editIndex>=0){
+    let{cat='',inst='',pr=''}=mydata;
+    console.log("mydata",mydata);
+ const arr2 = ele1.map((el,index)=>{
+      
+        let {code,prod,price,quantity,amount} = el;
+        console.log("el",el);
+   
+
+    
+       let   str3 = '<div class="row border">';
+        str3+=  '<div class="col-4">'+code+'  '+prod+'  price:'+price+' Quantity:'+quantity+' Amount:'+amount+'</div>';
+         str3+=   '<div class="col-0" onclick="addqty('+index+')"><font color="green"><i class="fa-solid fa-plus"></i></font></div>';
+         str3+=   '<div class="col-0" onclick="subqty('+index+')"><font color="yellow"><i class="fa-solid fa-minus"></i></font></div>';
+         str3+=   '<div class="col-0" onclick="remove('+index+')"><font color="red"><i class="fa-solid fa-xmark"></i></font></div>';
+        
+       
+        str3+=  '</div>';
+        
+      return str3
+    
+       }); 
+ 
+ console.log("cq",countquantity);
+ table1= '<h4>Details of Current Bill</h4>'+'</br>';
+ table1+='Items:'+bill.length+',Quantity:'+countquantity+',Amount:'+amount+'';
+
+ table1+=arr2.join('');
+// if(ele1.length>=0){
+      table1+='<button class="btn btn-primary" onclick="closed()">Close Bill</button>'
+
+ // } 
+ 
+let str1 = '<h4 class="text-center">Product List</h4>'+'</br>';
+ str1+='<div class="row ">';
+ str1+='<div class="col-3">';
+ str1+='<h6>Filter Products By:</h6>';
+ str1+='</div>';
+ str1+='<div class="col-3">'
+ str1+=madeDropdown('cate',category,'Select Category',cat,'',);
+ str1+='</div>';
+ str1+='<div class="col-3">';
+ str1+=madeDropdown('instock',inStock,'Select In Stock',inst,'');
+ str1+='</div>';
+ str1+='<div class="col-3">'
+ str1+=madeDropdown('range',priceRange,'Select Price Range',pr,'');
+ str1+='</div>';
+ // str1+=  '<button class="btn4 btn-primary" onclick="filter()">Filter</button>'
+       
+ str1+='</div>';
+
+  const arr = ele.map((pr,index)=>{
+       
+        let {code,prod,price,instock,category} = pr;
+         let str = '<div class="row border">';
+        str+=  '<div class="col-2">'+code+'</div>';
+        str+=  '<div class="col-2">'+prod+'</div>';
+        str+=  '<div class="col-2">'+category+'</div>';
+        str+=  '<div class="col-2">'+price+'</div>';
+        str+=  '<div class="col-2">'+instock+'</div>';
+        str+=  '<button class="btn3 btn-primary" onclick="addBill('+index+')">Add To Bill</button>'
+       
+
+      str+=  '</div>';
+      return str;
+       });
+
+       let table ='<div class="row bg-dark text-white">';
+        table+=  '<div class="col-2" onclick="sort(0)">Code</div>';
+       table+=   '<div class="col-2" onclick="sort(1)">Product(x)</div>';
+       table+=   '<div class="col-2" onclick="sort(2)">Category</div>';
+       table+=   '<div class="col-2" onclick="sort(3)">Price</div>';
+       table+=   '<div class="col-2" onclick="sort(4)">In Stock</div>';
+       table+=   '<div class="col-1" onclick="sort(5)"></div>';
+      
+       table+=   '</div>';
+       table+= arr.join('');
+    
+       return table1+str1+table;
+  
+}
+
+
+/////////////////////////////////////////////////////////// REMOVE //////////////////////////////////////
+function remove(index){
+  let ar = bill[index];
+  bill.splice(index,1);
+  showBill(data,bill);
+}
+/////////////////////////////////////////////////// ADD QTY////////////////////////////////////////////////////////
+function addqty(index){
+  let arr3 = bill[index];
+  console.log("arr3",arr3);
+  arr3.quantity=arr3.quantity+1;
+  console.log()
+  showBill(data,bill);
+}
+////////////////////////////////////////////////////////// SUB QTY//////////////////////////////////////////////
+function subqty(index){
+  let arr3 = bill[index];
+  console.log("arr3",arr3);
+  arr3.quantity=arr3.quantity-1;
+  if(arr3.quantity==0){
+    remove(index);
+  }
+  console.log()
+  showBill(data,bill);
+}
+/////////////////////////////////////////////////CLOSE ////////////////////////////////////////////////////////////
+
+  function closed(){
+     console.log("hello");
+    console.log("bill");
+  bill.splice(0,bill.length);
+  console.log("bill",bill);
+  showBill(data,bill);
+  console.log("bill",bill);
+}
+
+////////////////////////////////////////////////////////////FILTER////////////////////////////////////////////////////
+
+
+  function filter(){
+ // alert('yes i am working');
+  //console.log("hi");
+   let category1 = document.getElementById("cate").value;
+   let instock1 = document.getElementById("instock").value;
+   let priceRange1 = document.getElementById("range").value;
+
+  let items = {cat:category1,inst:instock1,pr:priceRange1};
+  
+    console.log("category",category1);
+    console.log("instock",instock1);
+    console.log("pricerange",priceRange1);
+
+   let arr3 = data.filter(function(ele){
+    if(category1==ele.category && instock1=='' && priceRange1==''){
+      //console.log("i am working");
+      return ele.category;
+    } 
+
+   /*else if(instock1=="Yes"){
+    return ele.instock=="Yes";
+   }
+   else if(instock1=="No"){
+    return ele.instock=="No";
+   }
+   else if(priceRange1=="<10" ){
+    return ele.price<10;
+   }
+   else if(priceRange1=="10-20"){
+    return ele.price>=10 && ele.price<=20;
+   }
+   else if(priceRange1==">20"){
+    return ele.price>20;
+   } */
+ else if(category1== ele.category && instock1== ele.instock && priceRange1==''){
+     console.log("i am working",ele.category,instock1);
+      return ele.category== ele.category && ele.instock==ele.instock;
+    }
+   /* else if(category1==ele.category && instock1=="No"){
+     console.log("i am working");
+      return category1==ele.category && instock1==ele.instock;
+    } */
+   else if(category1==ele.category && instock1==ele.instock && priceRange1=="<10"){
+     console.log("i am working");
+      return ele.category==category1 && ele.instock==instock1 && ele.price<10;
+    }
+     else if(category1==ele.category && instock1==ele.instock && priceRange1=="10-20"){
+     console.log("i am working");
+      return ele.category==category1 && ele.instock==instock1 && ele.price>=10 && ele.price<=20;
+    }
+    else  if(category1==ele.category && instock1==ele.instock && priceRange1==">20"){
+     console.log("i am working");
+      return ele.category==category1 && ele.instock==instock1 && ele.price>=10 && ele.price>20;
+    }
+    
+
+ else if(category1=='' && instock1=='' && priceRange1==''){
+   return ele;
+   } 
+   
+
+ });
+     console.log("arr3",arr3);
+
+ mydata= items; 
+ console.log("mydata filter",mydata);  
+    showBill(arr3,bill);
+   } 
+
+///////////////////////////////////////////////////////// MAKE DD /////////////////////////////////////////////////////////
+
+
+
+ function madeDropdown(id,options,header,selValue='',err='',onChangeFn){
+  console.log("opt",options);
+   const arr1 = options.map(opt=>{
+    console.log("sv",selValue);
+        let selected = opt ===selValue ? 'selected':'';
+        return '<option '+selected+'>'+opt+'</option>';
+      });
+   let s1 = '<div class="form-group">';
+   
+       s1+='<select id ="'+id+'" class="form-control" onchange="filter(this)">';
+     
+   let selectedHeader = selValue ? '' : 'selected';
+   s1+='<option value="" enable '+selectedHeader+'>'+header+'</option>';
+   s1+=arr1.join('');
+   
+   s1+='</select>';
+   s1+= err ? '<span class="text-danger">'+err+'</span>' : '';
+   s1+='</div>';
+   return s1;
+}
+
+
+
+/////////////////////////////////////////////////////// SORT ////////////////////////////////////////////////////
+
+function sort(colNo){
+  switch(colNo){
+    case 0:data.sort((p1,p2)=>p1.code.localeCompare(p2.code));break;
+    case 1:data.sort((p1,p2)=>p1.prod.localeCompare(p2.prod));break;
+    case 2:data.sort((p1,p2)=>p1.category.localeCompare(p2.category));break;
+    case 3:data.sort((p1,p2)=>(+p1.price)-(+p2.price));break;
+    case 4:data.sort((p1,p2)=>p1.instock.localeCompare(p2.instock));break;
+    
+    
+  }
+  showBill(data,bill);
+
+}
+
+
+
+
+////////////////////////////////////////////////MAKE NAV BAR//////////////////////////////////////////////  
+ 
+    function makeNavbar(active=0){
+  // 1:show products 2: add a product
+  let str ='<nav class="navbar navbar-expand-lg navbar-dark bg-dark">';
+  str+= '<a class="navbar-brand" href="#">BillingSystem</a>';
+  str+='<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown">';
+  str+='<span class="navbar-toggler-icon"></spna>';
+  str+= '</button>';
+  str+= '<div class="collapse navbar-collapse" id="navbarNavDropdown">';
+  str+= '<ul class="navbar-nav">';
+  let active1 = active===1 ? 'active':'';
+  
+  str+= '<li class="nav-item '+active1+'">';
+  
+  str+= '<a class="nav-link" onclick="showBill(data,bill)">New Bill</a>';
+  str+= '</li>';
+  
+ 
+  
+  str+='</ul>';
+  str+='</div>';
+  str+='</nav>';
+  return str;
+}
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
